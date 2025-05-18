@@ -11,5 +11,6 @@ def month_to_season(month):
     else:
         return "Некорректный месяц"
 
+
 # Пример вызова
 print(month_to_season(2))  # Зима

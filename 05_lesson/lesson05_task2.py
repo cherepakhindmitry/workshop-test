@@ -1,23 +1,21 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 import time
 
-# Создаем драйвер для Google Chrome
-driver = webdriver.Chrome()
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
 try:
-    # Переходим на страницу с динамическими ID
+    # Открываем страницу с кнопкой, у которой динамический ID
     driver.get("http://uitestingplayground.com/dynamicid")
 
-    # Находим синюю кнопку по CSS-классу ".btn-primary"
-    # Здесь не используем ID, т.к. оно динамическое
+    # Ищем кнопку по CSS-классу. Он остается постоянным, даже если ID меняется
     button = driver.find_element(By.CSS_SELECTOR, ".btn-primary")
 
-    # Кликаем на кнопку
+    # Кликаем по кнопке
     button.click()
-
-    # Ждем 1 секунду, чтобы увидеть эффект
-    time.sleep(1)
+    time.sleep(3)
 finally:
     # Закрываем браузер
     driver.quit()

@@ -1,22 +1,28 @@
+# Импорт необходимых библиотек:
+# webdriver — для управления браузером
+# By — способ указать, как искать элемент (по ID, классу, тегу и т.д.)
+# Service — для запуска ChromeDriver через webdriver-manager
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-import time
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+import time  # используется для паузы между действиями
 
-# Создаем объект драйвера для Google Chrome
-driver = webdriver.Chrome()
+# Создаем объект Chrome-драйвера, с автоматической установкой подходящего ChromeDriver
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
 
 try:
-    # Открываем страницу
+    # Открываем веб-страницу с кнопкой
     driver.get("http://uitestingplayground.com/classattr")
 
-    # Находим кнопку по CSS-классу ".btn-primary"
+    # Находим кнопку по CSS-классу. В данном случае .btn-primary — синяя кнопка
     button = driver.find_element(By.CSS_SELECTOR, ".btn-primary")
 
-    # Кликаем на найденную кнопку
+    # Кликаем по найденной кнопке
     button.click()
 
-    # Ждем 1 секунду, чтобы увидеть результат клика
-    time.sleep(1)
+    # Делаем паузу, чтобы увидеть результат перед закрытием окна
+    time.sleep(3)
 finally:
-    # Закрываем браузер вне зависимости от результата
+    # Закрываем браузер даже если произошла ошибка
     driver.quit()

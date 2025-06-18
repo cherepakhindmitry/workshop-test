@@ -1,4 +1,3 @@
-import pytest
 from string_utils import StringUtils
 
 utils = StringUtils()
@@ -6,7 +5,6 @@ utils = StringUtils()
 # Проверяет, что capitalize делает первую букву заглавной
 def test_capitalize_positive():
     assert utils.capitalize("skypro") == "Skypro"
-
 
 # Проверяет, что capitalize корректно обрабатывает пустую строку
 def test_capitalize_empty_string():
@@ -25,7 +23,7 @@ def test_trim_no_leading_spaces():
 
 # Проверяет, что contains возвращает True, если символ найден
 def test_contains_positive():
-    assert utils.contains("SkyPro", "S") is True
+    assert utils.contains("SkyPro", "S") == True
 
 
 # Проверяет, что contains возвращает False, если символ не найден

@@ -3,3 +3,6 @@ numbers = list(range(18, 1, -4))
 
 # Выводим результат
 print(numbers)
+
+
+# numbers = [range(18, 1, -4)]

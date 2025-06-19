@@ -14,3 +14,5 @@ catalog = [
 for phone in catalog:
     # Формат вывода: Марка - Модель. Номер
     print(f"{phone.brand} - {phone.model}. {phone.number}")
+
+print(catalog[1].brand,catalog[1].model)

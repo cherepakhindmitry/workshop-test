@@ -30,3 +30,4 @@ def test_images_loaded():
 
     finally:
         driver.quit()
+

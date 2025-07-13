@@ -1,17 +1,17 @@
+# Импорт движка и сессии из SQLAlchemy
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-# Замените данными для вашей базы данных
+# URL для подключения к базе данных PostgreSQL
 DATABASE_URL = "postgresql://Skypro:12345678@localhost:5432/qa2"
 
-# Создаем подключение
+# Создание движка
 engine = create_engine(DATABASE_URL)
 
-# Создаем сессию для работы с БД
+# Создание сессии для взаимодействия с БД
 Session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-session = Session()
 
-# В случае необходимости, можно протестировать подключение
+# Проверка подключения (необязательно, но полезно при отладке)
 try:
     connection = engine.connect()
     print("Подключение успешно!")

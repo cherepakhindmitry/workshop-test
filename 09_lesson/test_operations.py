@@ -1,16 +1,17 @@
+# Импортируем библиотеки для тестов и подключения к базе данных
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Student  # Импортируем модель
+from models import Base, Student
 
+
+# Подключение к локальной базе данных PostgreSQL
 DATABASE_URL = "postgresql://Skypro:12345678@localhost:5432/qa2"
-
-# Создаем подключение
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
 
 
-# Создаем таблицы перед тестами
+# Фикстура: создание таблицы до всех тестов и удаление после
 @pytest.fixture(scope="module")
 def setup_database():
     Base.metadata.create_all(bind=engine)
@@ -18,42 +19,48 @@ def setup_database():
     Base.metadata.drop_all(bind=engine)
 
 
-# Тест на добавление студента
-def test_add_student(setup_database):
+# Фикстура: создаёт сессию SQLAlchemy для каждого теста
+@pytest.fixture
+def session():
     session = Session()
-    new_student = Student(name="John Doe", age=20)
-    session.add(new_student)
-    session.commit()
-
-    # Проверяем, что студент добавлен
-    student = session.query(Student).filter_by(name="John Doe").first()
-    assert student is not None
-    assert student.name == "John Doe"
-    assert student.age == 20
+    yield session
     session.close()
 
 
-# Тест на изменение студента
-def test_update_student(setup_database):
-    session = Session()
-    student = session.query(Student).filter_by(name="John Doe").first()
-    student.age = 21
+# Фикстура: добавляет студента перед тестом и удаляет его после
+@pytest.fixture
+def student_fixture(session):
+    student = Student(name="Fixture Student", age=25)
+    session.add(student)
     session.commit()
-
-    # Проверяем, что возраст студента обновился
-    updated_student = session.query(Student).filter_by(name="John Doe").first()
-    assert updated_student.age == 21
-    session.close()
-
-
-# Тест на удаление студента
-def test_delete_student(setup_database):
-    session = Session()
-    student = session.query(Student).filter_by(name="John Doe").first()
+    yield student
     session.delete(student)
     session.commit()
 
-    # Проверяем, что студент удален
-    deleted_student = session.query(Student).filter_by(name="John Doe").first()
-    assert deleted_student is None
-    session.close()
+
+# Тест: проверка добавления студента в таблицу
+def test_add_student(setup_database, session):
+    student = Student(name="Test Student", age=20)
+    session.add(student)
+    session.commit()
+    result = session.query(Student).filter_by(name="Test Student").first()
+    assert result is not None
+    assert result.age == 20
+
+
+# Тест: проверка изменения данных студента
+def test_update_student(setup_database, student_fixture, session):
+    student_fixture.age = 30
+    session.commit()
+    updated = session.query(Student).filter_by(
+        name=student_fixture.name).first()
+    assert updated.age == 30
+
+
+# Тест: проверка удаления студента из таблицы
+def test_delete_student(setup_database, student_fixture, session):
+    session.delete(student_fixture)
+    session.commit()
+    deleted = session.query(Student).filter_by(
+        name=student_fixture.name).first()
+    assert deleted is None
